@@ -5,6 +5,7 @@ class Unit:
     def __init__(self, value, precise=False, parts=None, expected=None):
         self.parts = parts
         self.precise = precise
+        self.error = 0
         if self.precise:
             self.value = value
         else:
@@ -34,9 +35,12 @@ class Unit:
         return type(self) is type(other) and self.value == other.value and self.precise == other.precise
 
     def __repr__(self):
+        out = f"{str(self.value)}{self.suffix}"
         if self.parts:
-            return f"{self.value}[{'+'.join(p.value for p in self.parts)}]{self.suffix}"
-        return f"{self.value}{self.suffix}"
+            out = f"{str(self.value)}[{'+'.join(str(p.value) for p in self.parts)}]{self.suffix}"
+        if self.error != 0:
+            out += f" ±{str(self.error)}{self.suffix}"
+        return out
 
 class Volt(Unit):
     suffix="V"
@@ -61,6 +65,9 @@ class VoltageDivider:
             if not self.resistors:
                 raise ValueError("Expected list of resistors with which to calculate best options")
             self.fix_missing_resistance()
+
+    def __repr__(self):
+        return f"<VoltageDivider v1={self.v1} r1={self.r1} r2={self.r2} v2={self.v2}>"
 
     def fix_missing_value(self, expected_v1=None, expected_r1=None, expected_r2=None, expected_v2=None):
         v1 = self.v1.value if self.v1 else None
