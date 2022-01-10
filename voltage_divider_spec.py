@@ -1,5 +1,5 @@
 from mamba import description, context, it
-from expects import expect, equal
+from expects import expect, equal, raise_error
 from voltage_divider import VoltageDivider, Volt, Ohm
 
 with description("Voltage Divider") as self:
@@ -25,3 +25,11 @@ with description("Voltage Divider") as self:
         expect(vd_resistor_calc.r2).to(equal(Ohm(4300)))
         expect(vd_resistor_calc.v2).to(equal(Volt(3.308)))
         expect(vd_resistor_calc.v2.error).to(equal(0.008))
+
+    with it("can tolerate lazy input, but not incorrect input"):
+        vd_lazy_valid = VoltageDivider(v1=5, v2=3.3, r1=2200, r2=4270.588)
+        expect(type(vd_lazy_valid.v1)).to(equal(Volt))
+        # supplied values do not correlate with the equation
+        def callback_lazy_invalid():
+            vd_lazy_invalid = VoltageDivider(v1=5, v2=3.3, r1=2200, r2=4300)
+        expect(callback_lazy_invalid).to(raise_error(ValueError))

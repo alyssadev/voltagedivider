@@ -50,10 +50,10 @@ class Ohm(Unit):
 
 class VoltageDivider:
     def __init__(self, v1: Volt=None, r1: Ohm=None, r2: Ohm=None, v2: Volt=None, resistors: List[Ohm]=None):
-        self.v1 = v1
-        self.r1 = r1
-        self.r2 = r2
-        self.v2 = v2
+        self.v1 = v1 if not v1 or type(v1) is Volt else Volt(v1)
+        self.r1 = r1 if not r1 or type(r1) is Ohm else Ohm(r1)
+        self.r2 = r2 if not r2 or type(r2) is Ohm else Ohm(r2)
+        self.v2 = v2 if not v2 or type(v2) is Volt else Volt(v2)
         self.resistors = resistors
 
         # Calculate missing value
@@ -66,14 +66,16 @@ class VoltageDivider:
                 raise ValueError("Expected list of resistors with which to calculate best options")
             self.fix_missing_resistance()
 
+        self.check_valid_values()
+
     def __repr__(self):
         return f"<VoltageDivider v1={self.v1} r1={self.r1} r2={self.r2} v2={self.v2}>"
 
     def fix_missing_value(self, expected_v1=None, expected_r1=None, expected_r2=None, expected_v2=None):
         v1 = self.v1.value if self.v1 else None
-        v2 = self.v2.value if self.v2 else None
         r1 = self.r1.value if self.r1 else None
         r2 = self.r2.value if self.r2 else None
+        v2 = self.v2.value if self.v2 else None
         if self.v1 is None:
             self.v1 = Volt(v2 * (r1+r2)/r2, expected=expected_v1)
         if self.r1 is None:
@@ -117,3 +119,12 @@ class VoltageDivider:
         expected_v2 = self.v2.value
         self.v2 = None
         self.fix_missing_value(expected_v2=expected_v2)
+
+    def check_valid_values(self):
+        v1 = self.v1.value if self.v1 else None
+        r1 = self.r1.value if self.r1 else None
+        r2 = self.r2.value if self.r2 else None
+        v2 = self.v2.value if self.v2 else None
+        expected_v2 = round(v1 * (r2 / (r1+r2)),3)
+        if v2 != expected_v2:
+            raise ValueError(f"Invalid voltage divider equation with values v1={self.v1} r1={self.r1} r2={self.r2} v2={self.v2}")
