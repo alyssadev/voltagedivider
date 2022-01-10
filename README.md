@@ -8,13 +8,17 @@ Usage
 
 Calculate missing value in equation, given the other three values (resulting VoltageDivider object has missing values filled in)
 
-    >>> from voltage_divider import VoltageDivider, Volt, Ohm
-    >>> VoltageDivider(r1=Ohm(2200), r2=Ohm(4300), v2=Volt(3.3))
-    <VoltageDivider v1=4.988V r1=2200Ω r2=4300Ω v2=3.3V>
+```python
+>>> from voltage_divider import VoltageDivider, Volt, Ohm
+>>> VoltageDivider(r1=Ohm(2200), r2=Ohm(4300), v2=Volt(3.3))
+<VoltageDivider v1=4.988V r1=2200Ω r2=4300Ω v2=3.3V>
+```
 
 Given a list of available resistors you have lying around, the input voltage you have, and the output voltage you want, calculate which pair of available resistors (or which pairs of resistors in series) would be suitable to achieve the output voltage, displaying the amount of error where applicable
 
-    >>> VoltageDivider(v1=Volt(5), v2=Volt(3.3), resistors=[Ohm(1000), Ohm(2200), Ohm(3300), Ohm(4700)])
-    <VoltageDivider v1=5V r1=2200Ω r2=4300[1000+3300]Ω v2=3.308V ±0.008V>
+```python
+>>> VoltageDivider(v1=Volt(5), v2=Volt(3.3), resistors=[Ohm(1000), Ohm(2200), Ohm(3300), Ohm(4700)])
+<VoltageDivider v1=5V r1=2200Ω r2=4300[1000+3300]Ω v2=3.308V ±0.008V>
+```
 
 Translation: Given the input of 5V, if you used a 2.2kΩ resistor as R1 and used a 1kΩ and a 3.3kΩ resistor in series as R2, you would get 3.308V on the output, which is within 0.008V of the expected value.
