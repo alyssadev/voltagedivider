@@ -14,34 +14,34 @@ class Unit:
             self.expected = expected
             self.error = round(abs(self.value - self.expected),3)
 
-# needs work
-#    def __add__(self, other):
-#        return self.value + (other.value if other is Unit else other)
-#    def __sub__(self, other):
-#        return self.value - (other.value if other is Unit else other)
-#    def __mul__(self, other):
-#        return self.value * (other.value if other is Unit else other)
-#    def __div__(self, other):
-#        return self.value / (other.value if other is Unit else other)
-#    def __radd__(self, other):
-#        return self.__add__(other)
-#    def __rsub__(self, other):
-#        return self.__sub__(other)
-#    def __rmul__(self, other):
-#        return self.__mul__(other)
-#    def __rdiv__(self, other):
-#        return self.__div__(other)
+    # there must be a nicer way to do this
+    def __add__(self, other):
+        return self.value + (other.value if other is Unit else other)
+    def __sub__(self, other):
+        return self.value - (other.value if other is Unit else other)
+    def __mul__(self, other):
+        return self.value * (other.value if other is Unit else other)
+    def __div__(self, other):
+        return self.value / (other.value if other is Unit else other)
+    def __radd__(self, other):
+        return (other.value if other is Unit else other) + self.value
+    def __rsub__(self, other):
+        return (other.value if other is Unit else other) - self.value
+    def __rmul__(self, other):
+        return (other.value if other is Unit else other) * self.value
+    def __rdiv__(self, other):
+        return (other.value if other is Unit else other) / self.value
 
     def __eq__(self, other):
         return type(self) is type(other) and self.value == other.value and self.precise == other.precise
 
     def __repr__(self):
-        out = f"{str(self.value)}{self.suffix}"
+        out = f"{str(self.value)}"
         if self.parts:
-            out = f"{str(self.value)}[{'+'.join(str(p.value) for p in self.parts)}]{self.suffix}"
+            out = f"[{'+'.join(str(p.value) for p in self.parts)}]"
         if self.error != 0:
-            out += f" ±{str(self.error)}{self.suffix}"
-        return out
+            out += f"±{str(self.error)}"
+        return out + f"{self.suffix}"
 
 class Volt(Unit):
     suffix="V"
@@ -67,12 +67,16 @@ class VoltageDivider:
                 raise ValueError("Expected list of resistors with which to calculate best options")
             self.fix_missing_resistance()
 
+        if len([a for a in [self.v1,self.r1,self.r2,self.v2] if a is None]) > 0:
+            raise ValueError(f"Unhandled error with values v1={self.v1} r1={self.r1} r2={self.r2} v2={self.v2}")
+
         self.check_valid_values()
 
     def __repr__(self):
         return f"<VoltageDivider v1={self.v1} r1={self.r1} r2={self.r2} v2={self.v2}>"
 
     def fix_missing_value(self, expected_v1=None, expected_r1=None, expected_r2=None, expected_v2=None):
+        # attempting to use dunder methods to perform calculations directly using class objects instead of this mess results in errors, see https://github.com/alyssadev/voltagedivider/issues/3
         v1 = self.v1.value if self.v1 else None
         r1 = self.r1.value if self.r1 else None
         r2 = self.r2.value if self.r2 else None
