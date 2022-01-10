@@ -14,22 +14,23 @@ class Unit:
             self.expected = expected
             self.error = round(abs(self.value - self.expected),3)
 
-    def __add__(self, other):
-        return self.value + (other.value if other is Unit else other)
-    def __sub__(self, other):
-        return self.value - (other.value if other is Unit else other)
-    def __mul__(self, other):
-        return self.value * (other.value if other is Unit else other)
-    def __div__(self, other):
-        return self.value / (other.value if other is Unit else other)
-    def __radd__(self, other):
-        return self.__add__(other)
-    def __rsub__(self, other):
-        return self.__sub__(other)
-    def __rmul__(self, other):
-        return self.__mul__(other)
-    def __rdiv__(self, other):
-        return self.__div__(other)
+# needs work
+#    def __add__(self, other):
+#        return self.value + (other.value if other is Unit else other)
+#    def __sub__(self, other):
+#        return self.value - (other.value if other is Unit else other)
+#    def __mul__(self, other):
+#        return self.value * (other.value if other is Unit else other)
+#    def __div__(self, other):
+#        return self.value / (other.value if other is Unit else other)
+#    def __radd__(self, other):
+#        return self.__add__(other)
+#    def __rsub__(self, other):
+#        return self.__sub__(other)
+#    def __rmul__(self, other):
+#        return self.__mul__(other)
+#    def __rdiv__(self, other):
+#        return self.__div__(other)
 
     def __eq__(self, other):
         return type(self) is type(other) and self.value == other.value and self.precise == other.precise
