@@ -6,6 +6,10 @@ A Python library to simplify the calculations necessary for adding a voltage div
 Usage
 -----
 
+Install: `pip install git+https://github.com/alyssadev/voltagedivider#egg=voltage_divider`
+
+Install with schemdraw for circuit diagram rendering: `pip install git+https://github.com/alyssadev/voltagedivider#egg=voltage_divider[schemdraw]`
+
 Calculate missing value in equation, given the other three values (resulting VoltageDivider object has missing values filled in)
 
 ```python
