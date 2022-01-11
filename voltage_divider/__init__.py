@@ -148,9 +148,19 @@ class VoltageDivider:
         d = schemdraw.Drawing()
         d += elm.Vdd().label(repr(self.v1))
         d += elm.Line().right()
-        d += (r1 := elm.Resistor().down().label(repr(self.r1)))
-        d += elm.Resistor().down().label(repr(self.r2))
+        if self.r1.parts:
+            for r in self.r1.parts:
+                d += elm.Resistor().down().label(repr(r))
+        else:
+            d += elm.Resistor().down().label(repr(self.r1))
+        d += (r1_base := elm.Dot())
+        if self.r2.parts:
+            for r in self.r2.parts:
+                d += elm.Resistor().down().label(repr(r))
+        else:
+            d += elm.Resistor().down().label(repr(self.r2))
         d += elm.Ground()
-        d += elm.Line().right().at(r1.end)
+        d += elm.Line().right().at(r1_base.end)
         d += elm.Vss().right().label(repr(self.v2))
         self.schematic = d
+        self.schematic.draw()
