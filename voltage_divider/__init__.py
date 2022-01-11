@@ -55,7 +55,7 @@ class VoltageDivider:
         self.r1 = r1 if not r1 or type(r1) is Ohm else Ohm(r1)
         self.r2 = r2 if not r2 or type(r2) is Ohm else Ohm(r2)
         self.v2 = v2 if not v2 or type(v2) is Volt else Volt(v2)
-        self.resistors = resistors
+        self.resistors = [r if type(r) is Ohm else Ohm(r) for r in resistors] if resistors else None
 
         # Calculate missing value
         if len([a for a in [v1,r1,r2,v2] if a is None]) == 1:
