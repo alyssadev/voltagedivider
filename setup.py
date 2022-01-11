@@ -8,7 +8,7 @@ setup(
     author="Alyssa Smith",
     author_email="alyssa.dev.smith@gmail.com",
     license="MIT",
-    extras_requires={
+    extras_require={
         "schemdraw": [
             "schemdraw"
         ]
