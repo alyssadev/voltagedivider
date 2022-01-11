@@ -32,3 +32,7 @@ It also tolerates lazy input to the constructor, not giving it the types, since 
 >>> VoltageDivider(v1=5, v2=3.3, r1=2200, r2=4300)
 ! raises ValueError
 ```
+
+A newly added feature, the tool now generates a circuit schematic for you using [schemdraw](https://schemdraw.readthedocs.io/en/stable/usage/start.html). Install schemdraw using pip to enable rendering these schematics in Jupyter notebooks. The schematic data is saved on VoltageDivider.schematic if you'd like to export it as SVG to view elsewhere.
+
+![schematic screenshot](https://github.com/alyssadev/voltagedivider/raw/master/.github/schematic.png)

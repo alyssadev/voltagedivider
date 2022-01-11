@@ -1,4 +1,10 @@
 from typing import List
+try:
+    import schemdraw
+    import schemdraw.elements as elm
+    SCHEMDRAW = True
+except ImportError:
+    SCHEMDRAW = False
 
 class Unit:
     suffix = ""
@@ -72,6 +78,10 @@ class VoltageDivider:
 
         self.check_valid_values()
 
+        global SCHEMDRAW
+        if SCHEMDRAW:
+            self.render_schematic()
+
     def __repr__(self):
         return f"<VoltageDivider v1={self.v1} r1={self.r1} r2={self.r2} v2={self.v2}>"
 
@@ -133,3 +143,14 @@ class VoltageDivider:
         expected_v2 = round(v1 * (r2 / (r1+r2)),3)
         if v2 != expected_v2:
             raise ValueError(f"Invalid voltage divider equation with values v1={self.v1} r1={self.r1} r2={self.r2} v2={self.v2}")
+
+    def render_schematic(self):
+        d = schemdraw.Drawing()
+        d += elm.Vdd().label(repr(self.v1))
+        d += elm.Line().right()
+        d += (r1 := elm.Resistor().down().label(repr(self.r1)))
+        d += elm.Resistor().down().label(repr(self.r2))
+        d += elm.Ground()
+        d += elm.Line().right().at(r1.end)
+        d += elm.Vss().right().label(repr(self.v2))
+        self.schematic = d
