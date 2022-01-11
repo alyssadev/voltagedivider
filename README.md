@@ -18,7 +18,7 @@ Given a list of available resistors you have lying around, the input voltage you
 
 ```python
 >>> VoltageDivider(v1=Volt(5), v2=Volt(3.3),
-        resistors=[Ohm(1000), Ohm(2200), Ohm(3300), Ohm(4700)])
+        resistors=[1000, 2200, 3300, 4700])
 <VoltageDivider v1=5V r1=2200Ω r2=4300[1000+3300]Ω v2=3.308V ±0.008V>
 ```
 
