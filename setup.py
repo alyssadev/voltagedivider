@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="voltage_divider",
-    version="0.2.0",
+    version="0.2.1",
     description="A Python library to simplify the calculations necessary for adding a voltage divider to your circuit.",
     url="https://github.com/alyssadev/voltagedivider",
     author="Alyssa Smith",

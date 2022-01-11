@@ -44,7 +44,7 @@ class Unit:
     def __repr__(self):
         out = f"{str(self.value)}"
         if self.parts:
-            out = f"[{'+'.join(str(p.value) for p in self.parts)}]"
+            out += f"[{'+'.join(str(p.value) for p in self.parts)}]"
         if self.error != 0:
             out += f"±{str(self.error)}"
         return out + f"{self.suffix}"
@@ -106,21 +106,30 @@ class VoltageDivider:
         goal_v2 = self.v2.value
         # Add pairs of resistors in series to options
         resistors = [r.value for r in self.resistors]
-        for _r1 in self.resistors:
-            for _r2 in self.resistors:
-                r1 = _r1.value
-                r2 = _r2.value
-                resistors.append((r1,r2))
-        # Iterate over options and build output
+        # Series: first order
+        resistor_pairs = []
         for r1 in resistors:
             for r2 in resistors:
-                _r1 = r1
-                _r2 = r2
-                if type(r1) is tuple:
-                    r1 = sum(r1)
-                if type(r2) is tuple:
-                    r2 = sum(r2)
+                # store for later
+                resistor_pairs.append((r1,r2))
+                outp[(r1,r2)] = abs(goal_v2-(v1 * (r2 / (r1 + r2))))
+        # Series: second order top resistor
+        for _r1 in resistor_pairs:
+            for r2 in resistors:
+                r1 = sum(_r1)
+                outp[(_r1,r2)] = abs(goal_v2-(v1 * (r2 / (r1 + r2))))
+        # Series: second order bottom resistor
+        for r1 in resistors:
+            for _r2 in resistor_pairs:
+                r2 = sum(_r2)
+                outp[(r1,_r2)] = abs(goal_v2-(v1 * (r2 / (r1 + r2))))
+        # Series: second order both resistors
+        for _r1 in resistor_pairs:
+            for _r2 in resistor_pairs:
+                r1 = sum(_r1)
+                r2 = sum(_r2)
                 outp[(_r1,_r2)] = abs(goal_v2-(v1 * (r2 / (r1 + r2))))
+
         r1, r2 = min(outp, key=outp.get)
         if type(r1) is tuple:
             self.r1 = Ohm(sum(r1), parts=[Ohm(o) for o in r1])
